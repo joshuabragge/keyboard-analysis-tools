@@ -1,3 +1,4 @@
+import argparse
 import ctypes
 import time
 import random
@@ -80,7 +81,7 @@ def main():
 	filename_keystrokes = 'keystrokes.csv'
 	filename_mousestrokes = 'mousestrokes.csv'
 
-	# initialization
+	# __init__
 	log_mouse_results = True
 	keystrokes = []
 	mousestrokes = []
@@ -136,6 +137,17 @@ def main():
 			ergo_device.close()
 			break
 
-
 if __name__ == '__main__':
+	parser = argparse.ArgumentParser(description = "Log QMK keystrokes and mousestrokes")
+	parser.add_argument('outputdir', action = 'store', 
+						help='Output directory')
+	parser.add_argument('--input-lag', dest='input_lag', 
+						action='store', type=int,
+						default=0.05, help="Refresh rate before checking for next keystroke")
+	parser.add_argument('--obfuscate', dest='obfuscate',
+						action='store',	type=bool,
+						default=True, help="Randomize keystroke order in memory and before saving to file")
+	parser.add_argument('--keystroke-log', dest='keystrokes_before_logging',
+						action='store', type=int.
+						default=200, help="Number of keystrokes before logging to file")
 	main()
