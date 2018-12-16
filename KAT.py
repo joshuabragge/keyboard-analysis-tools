@@ -73,11 +73,11 @@ def append_list_to_file(lst, filename):
 def cleanup_logging_list(lst):
 	return [i.split('\n', 1)[0] for i in lst]
 
-def main():
+def main(opts):
 	# variables
-	obfuscate = True
-	keystrokes_before_logging = 100
-	input_lag = 0.05
+	obfuscate = opts.obfuscate
+	keystrokes_before_logging = opts.keystrokes_before_logging
+	input_lag = opts.input_lag
 	filename_keystrokes = 'keystrokes.csv'
 	filename_mousestrokes = 'mousestrokes.csv'
 
@@ -143,11 +143,14 @@ if __name__ == '__main__':
 						help='Output directory')
 	parser.add_argument('--input-lag', dest='input_lag', 
 						action='store', type=int,
-						default=0.05, help="Refresh rate before checking for next keystroke")
+						default=0.05, 
+						help="Refresh rate before checking for next keystroke")
 	parser.add_argument('--obfuscate', dest='obfuscate',
 						action='store',	type=bool,
-						default=True, help="Randomize keystroke order in memory and before saving to file")
+						default=True, 
+						help="Randomize keystroke order in memory and before saving to file")
 	parser.add_argument('--keystroke-log', dest='keystrokes_before_logging',
-						action='store', type=int.
-						default=200, help="Number of keystrokes before logging to file")
-	main()
+						action='store', type=int, default=100, 
+						help="Number of keystrokes before logging to file")
+	args = parser.parse_args()
+	main(args)
