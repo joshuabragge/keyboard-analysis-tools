@@ -64,6 +64,14 @@ def count_changed(number_before, number_after):
 	else:
 		return True
 
+def append_list_to_file(lst, filename):
+	with open(filename_keystrokes, "a") as f:
+		for item in keystrokes:
+			f.write("%s\n" % item)
+
+def cleanup_logging_list(lst):
+	return [i.split('\n', 1)[0] for i in lst]
+
 if __name__ == '__main__':
 	obfuscate = True
 	keystrokes_before_logging = 100
@@ -107,21 +115,19 @@ if __name__ == '__main__':
 			if len(keystrokes) > keystrokes_before_logging*2:
 				# cleaning up the data in case 
 				# receiving signal gets jumbled
-				keystrokes = [i.split('\n', 1)[0] for i in keystrokes]
-				mousestrokes = [i.split('\n', 1)[0] for i in mousestrokes]
+				keystrokes = cleanup_logging_list(lst=keystrokes)
+				mousestrokes = cleanup_logging_list(lst=mousestrokes)
 
 				if obfuscate:
 					random.shuffle(keystrokes)
 					random.shuffle(mousestrokes)
 
-				with open(filename_keystrokes, "a") as f:
-					for item in keystrokes:
-						f.write("%s\n" % item)
+				append_list_to_file(lst=keystrokes, filename=filename_keystrokes)
+
 				keystrokes = []
 
-				with open(filename_mousestrokes, "a") as f:
-					for item in mousestrokes:
-						f.write("%s\n" % item)			
+				append_list_to_file(lst=mousestrokes, filename=filename_mousestrokes)
+		
 				mousestrokes = []
 
 				print("{0} saving data...".format(time.time()))
