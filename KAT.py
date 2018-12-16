@@ -15,8 +15,15 @@ def get_mouse_pos():
 def raw_data_handler(binary_data):
 	raw_data = bytearray(binary_data).decode('utf-8')
 	data = raw_data.strip('\x00').strip('\n')
-	keystrokes.append(data)
+	keystroke_previous = data
+	if obfuscate:
+		random_insert(keystrokes, data)
+	else:
+		keystrokes.append(data)
 	print(data)
+
+def random_insert(lst, item):
+    lst.insert(random.randrange(len(lst)+1), item)
 
 def setup_keyboard():
 	ergodox_vendor = 0xfeed
@@ -66,6 +73,7 @@ if __name__ == '__main__':
 	log_mouse_results = True
 	keystrokes = []
 	mousestrokes = []
+	keystroke_previous = None
 	
 	ergo_device = setup_keyboard()
 	ergo_device.open()
@@ -87,11 +95,10 @@ if __name__ == '__main__':
 			else:
 				if log_mouse_results is True and keys_pressed_since_mouse_stopped is True:
 					log_mouse_results = False
-					last_key = keystrokes[-1]
 					keystrokes.append('M|0|0|0|STOPPED')
 					# log the key that made us move our hand away from mouse
 					# this data is useful if we turn on obfuscate
-					mousestrokes.append(last_key)
+					mousestrokes.append(keystroke_previous)
 
 			keystroke_count_previous = keystroke_count_current
 			mouse_pos_previous = mouse_pos_current
