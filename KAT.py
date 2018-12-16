@@ -72,9 +72,11 @@ def append_list_to_file(lst, filename):
 def cleanup_logging_list(lst):
 	return [i.split('\n', 1)[0] for i in lst]
 
+
 if __name__ == '__main__':
 	obfuscate = True
 	keystrokes_before_logging = 100
+	input_lag = 0.05
 	filename_keystrokes = 'keystrokes.csv'
 	filename_mousestrokes = 'mousestrokes.csv'
 
@@ -110,7 +112,7 @@ if __name__ == '__main__':
 
 			keystroke_count_previous = keystroke_count_current
 			mouse_pos_previous = mouse_pos_current
-			time.sleep(0.1)
+			time.sleep(input_lag)
 
 			if len(keystrokes) > keystrokes_before_logging*2:
 				# cleaning up the data in case 
@@ -123,14 +125,11 @@ if __name__ == '__main__':
 					random.shuffle(mousestrokes)
 
 				append_list_to_file(lst=keystrokes, filename=filename_keystrokes)
+				append_list_to_file(lst=mousestrokes, filename=filename_mousestrokes)
+				print("{0} saving data...".format(time.time()))
 
 				keystrokes = []
-
-				append_list_to_file(lst=mousestrokes, filename=filename_mousestrokes)
-		
 				mousestrokes = []
-
-				print("{0} saving data...".format(time.time()))
 
 		except KeyboardInterrupt:
 			print("Closing HID connection...")
