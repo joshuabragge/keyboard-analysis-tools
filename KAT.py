@@ -72,25 +72,25 @@ def append_list_to_file(lst, filename):
 def cleanup_logging_list(lst):
 	return [i.split('\n', 1)[0] for i in lst]
 
-
-if __name__ == '__main__':
+def main():
+	# variables
 	obfuscate = True
 	keystrokes_before_logging = 100
 	input_lag = 0.05
 	filename_keystrokes = 'keystrokes.csv'
 	filename_mousestrokes = 'mousestrokes.csv'
 
+	# initialization
 	log_mouse_results = True
 	keystrokes = []
 	mousestrokes = []
 	keystroke_previous = None
-	
+	mouse_pos_previous = get_mouse_pos()
+	keystroke_count_previous = len(keystrokes)
 	ergo_device = setup_keyboard()
 	ergo_device.open()
 
-	mouse_pos_previous = get_mouse_pos()
-	keystroke_count_previous = len(keystrokes)
-
+	print("Starting logging...")
 	time.sleep(1)
 
 	while True:
@@ -135,3 +135,7 @@ if __name__ == '__main__':
 			print("Closing HID connection...")
 			ergo_device.close()
 			break
+
+
+if __name__ == '__main__':
+	main()
