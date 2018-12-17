@@ -145,6 +145,9 @@ def main(opts):
 				mousestrokes = []
 
 		except KeyboardInterrupt:
+			print("{0} saving data...".format(time.time()))
+			append_list_to_file(lst=keystrokes, filename=filename_keystrokes)
+			append_list_to_file(lst=mousestrokes, filename=filename_mousestrokes)
 			print("Closing HID connection...")
 			ergo_device.close()
 			break
