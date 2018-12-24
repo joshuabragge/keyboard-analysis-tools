@@ -30,7 +30,7 @@ def filter_key_data(dataframe, layer='BASE', event='KL'):
 	if layer == 'all':
 		return pf
 	else:
-		pf = pf[pf['Layer']=='BASE']
+		pf = pf[pf['Layer']==layer]
 		return pf
 
 def add_key_data(dataframe):
@@ -39,6 +39,15 @@ def add_key_data(dataframe):
 
 def group_key_count(dataframe):
 	keystrokes_grouped = dataframe.groupby("Key").count()['Pressed'].reset_index().sort_values('Pressed',ascending=False)
+	return keystrokes_grouped
+
+def add_missing_keys(keystrokes_grouped):
+	all_keys = kl.ergodox_keys
+	all_keys = pd.DataFrame(all_keys)
+	all_keys.columns = ['Key']
+	all_keys['Pressed'] = 0
+	keystrokes_grouped = pd.concat([keystrokes_grouped , all_keys]).drop_duplicates(subset='Key', keep='first')
+	keystrokes_grouped = keystrokes_grouped.reset_index().drop('index',axis=1)
 	return keystrokes_grouped
 
 def generate_heatmap_bins(keystrokes_grouped):
@@ -117,10 +126,11 @@ def main(opts):
 	df = filter_key_data(df, layer=layer, event='KL')
 	df = add_key_data(df)
 	keystrokes_grouped = group_key_count(df)
+	keystrokes_grouped = add_missing_keys(keystrokes_grouped)
+	print(keystrokes_grouped)
 	values_distribution = generate_heatmap_bins(keystrokes_grouped)
 	keystrokes_grouped = ready_heatmap_data(keystrokes_grouped, values_distribution)
 	heatmap = generate_heatmap(keystrokes_grouped, keyboard_layout)
-	print(heatmap)
 	save_heatmap(heatmap, layer=layer, keyboard_layout='ergodox')
 
 
