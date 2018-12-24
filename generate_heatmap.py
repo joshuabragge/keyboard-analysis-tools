@@ -1,12 +1,19 @@
-import re
+import argparse
 import json
+import os
+import re
 import pandas as pd
 
 import heatmap_settings as hms
 import keyboard_layouts as kl
 
 
-keyboard_layout = kl.ergodox_layout.replace("\n","")
+def regex_mapping_colour(rowcol):
+    """
+    #("\d+|\w+)(?="\},"01.06")
+    '#("\d+|\w+)(?="\},"' + str(row) + '.' + str(col) + '")'
+    """
+    return '#("\d+|\w+)(?="\},"' + str(rowcol) + '")'
 
 def load_keyboard_layout(keyboard_layout=kl.ergodox_layout):
 	return kl.ergodox_layout.replace("\n","")
@@ -18,9 +25,13 @@ def load_key_data(filename='keystrokes.csv', sep="|"):
 
 def filter_key_data(dataframe, layer='BASE', event='KL'):
 	pf = dataframe[dataframe['Pressed']=='1']
-	pf = pf[pf['Layer']=='BASE']
 	pf = pf[pf['Type']=='KL']
-	return pf
+
+	if layer == 'all':
+		return pf
+	else:
+		pf = pf[pf['Layer']=='BASE']
+		return pf
 
 def add_key_data(dataframe):
 	dataframe['Key'] = dataframe['Row'] + "." + dataframe['Col']
@@ -78,7 +89,7 @@ def generate_heatmap(keystrokes_grouped, keyboard_layout):
 	for i in keystrokes_grouped.index:
 	    key = keystrokes_grouped['Key'].ix[i]
 	    colour = keystrokes_grouped['Colour'].ix[i]
-	    reg = kl.regex_mapping_colour(key)
+	    reg = regex_mapping_colour(key)
 	    p = re.compile(reg)
 	    try:
 	        replacement_colour = '#' + p.findall(keyboard_layout)[0]
@@ -88,29 +99,46 @@ def generate_heatmap(keystrokes_grouped, keyboard_layout):
 	    
 	    comment =  keystrokes_grouped['Comment'].ix[i]
 	    key = key.replace(".","|")
-	    updated_key = key + "\n\n\n\n" + comment
+	    updated_key = key + r"\n\n\n\n" + comment
 	    keyboard_layout = keyboard_layout.replace(key, updated_key)
 	return keyboard_layout
 
 def save_heatmap(heatmap, layer='BASE', keyboard_layout='ergodox'):
 	filename = keyboard_layout + '-' + layer + '.json'
 	with open(filename, 'w') as outfile:
-		json.dump(heatmap, outfile)
+		outfile.write(heatmap)
 
-def main(layer='BASE'):
+def main(opts):
+	filepath = os.path.join(opts.directory, opts.filename)
+	layer = opts.layer
+
 	keyboard_layout = load_keyboard_layout(keyboard_layout=kl.ergodox_layout)
-	df = load_key_data(filename='keystrokes.csv', sep="|")
-	df = filter_key_data(df, layer='BASE', event='KL')
+	df = load_key_data(filename=filepath)
+	df = filter_key_data(df, layer=layer, event='KL')
 	df = add_key_data(df)
 	keystrokes_grouped = group_key_count(df)
 	values_distribution = generate_heatmap_bins(keystrokes_grouped)
 	keystrokes_grouped = ready_heatmap_data(keystrokes_grouped, values_distribution)
 	heatmap = generate_heatmap(keystrokes_grouped, keyboard_layout)
-	save_heatmap(heatmap, layer='BASE', keyboard_layout='ergodox')
+	print(heatmap)
+	save_heatmap(heatmap, layer=layer, keyboard_layout='ergodox')
 
 
 if __name__ == '__main__':
-	main()
+	parser = argparse.ArgumentParser(description = "Generate heatmap for ergodox keyboard used on keyboard-layout-editor")
+	parser.add_argument('--directory', dest='directory', 
+						action='store', type=str,
+						default='data', 
+						help="Directory keylogging data is stored in")
+	parser.add_argument('--layer', dest='layer',
+						action='store',	type=str,
+						default='BASE', 
+						help="Keyboard layer to output heatmap of")
+	parser.add_argument('--filename', dest='filename',
+						action='store', type=str, default='keystrokes.csv', 
+						help="Keylogging data filename")
+	args = parser.parse_args()
+	main(args)
 
 
 
