@@ -11,3 +11,5 @@
 ##  generate_heatmap
 * option to generate images for all layers
 * setup default reference layer (so keycounts of 0 still show up)
+* create mapping of keyload to label heatmaps with
+

@@ -19,7 +19,7 @@ def load_keyboard_layout(keyboard_layout=kl.ergodox_layout):
 	return kl.ergodox_layout.replace("\n","")
 
 def load_key_data(filename='keystrokes.csv', sep="|"):
-	df = pd.read_csv(filename, header=None,delimiter=sep)
+	df = pd.read_csv(filename, header=None,delimiter=sep, dtype={0: object, 1: object, 2: object,3: object})
 	df.columns = ['Type','Row','Col', 'Pressed', 'Layer']
 	return df
 
