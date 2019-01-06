@@ -1,6 +1,6 @@
 # keyboard-analysis-tools
 
-This repository contains tools for caputuring and analyzing keyboard data. This data is used to enhance custom QMK keyboard layouts such as the [ergodox-ez][ergodox-ez] and [planck]planck.
+This repository contains tools for caputuring and analyzing keyboard data. This data is used to enhance custom QMK keyboard layouts such as the [ergodox-ez][ergodox-ez] and [planck][planck].
 
 [ergodox-ez]: https://github.com/joshuabragge/ergodox
 [planck]: https://github.com/joshuabragge/planck/
@@ -11,6 +11,8 @@ This repository contains tools for caputuring and analyzing keyboard data. This 
     - [Keyboard Logging](#keyboard-logger)
         - [Parameters](#parameters)
     - [Keyboard Configuration](#Keyboard-Configuration)
+    - [Privacy and Security Concerns](#privacy-security)
+* [Analyzing Data](#Analyzing-Data)
 
 ## Capturing Data
 ### Keyboard Logging
@@ -59,4 +61,22 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 [existing-solutions]: https://www.pjrc.com/teensy/hid_listen.html
 [log-leader]: https://github.com/joshuabragge/ergodox/blob/325429ef3de1e1997918541ce7b1e3b89b066b6b/keymap.c#L564
 
+### Privacy and Security Concerns with Logged Data
 
+The storing of keystroke data with `--obfuscate=True` should be sufficient to protect your information if it ever falls into the hands of malicious agent. The data is pseudorandomly saved in memory by inserting it into the current keystroke list which exists only in memory (the longer the list the better). Once the number of keystrokes hits it's specified parameter (`--keystroke-log=100`) the list is pseudorandomlized again before appending to the file. You end up with chuncks of pseudorandomlized data the lengh of the --keystroke-log parameter times two (for example with one keystroke of "m" we are recording the press down and release of the key `KL|01|09|0|BASE` and `KL|01|09|1|BASE`).
+
+That said, I would still recommend not logging passwords and other sensitive information even with `--obfuscate=True` on. Instead, one should look at disabling the logger temporarily via [a leader key for example][log-leader]. I certainly don't recommend running without `--obfuscate=  False` because becomes a keylogger in it's truest form.
+
+## Analyzing Data
+
+### Heatmaps
+
+####  Keyboard Layers
+[![Base layer](https://github.com/joshuabragge/keyboard-analysis-tools/blob/master/images/ergodox-base.png)
+[![Movement layer](https://github.com/joshuabragge/keyboard-analysis-tools/blob/master/images/ergodox-mvmnt.png)
+[![Number layer](https://github.com/joshuabragge/keyboard-analysis-tools/blob/master/images/ergodox-nmbr.png)
+
+#### Keys Pressed After Taking Hand off Mouse
+(right keyboard is only applicable)
+
+[![Mouse layer](https://github.com/joshuabragge/keyboard-analysis-tools/blob/master/images/ergodox-mouse.png)
