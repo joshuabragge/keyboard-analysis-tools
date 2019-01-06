@@ -7,11 +7,13 @@ This repository contains tools for caputuring and analyzing keyboard data. This 
 
 The keyboard logger script was built because [existing HID listen solutions required administrative permissions][existing-solutions]. Admin permissions can (apparently) be circumvented in Windows with pywinusb.
 
-At a high level, this script hooks onto a specified HID device - such as an ergodox-ez keyboard - and records the key presses to a file.
+At a high level, this script hooks onto a specified HID device - such as an ergodox-ez keyboard - and records the keys pressed to a file.
 
-The resulting file appears as so:
+The resulting file is a list of the keys that pressed, not the value those keys represent (that information can obviously be determined when combined with the keymap.c).
 
-```
+The data structure is obviously a result of how you configure it in your keymap.c ((see keyboard configuration for more details))[#keyboard-configuration]. I have found the following structure to be acceptable.
+
+```Device | Key row | Key column | Key pressed down | Layer
 KL|03|03|1|BASE
 KL|01|09|1|BASE
 KL|02|02|1|BASE
@@ -19,8 +21,14 @@ KL|03|09|0|BASE
 KL|02|10|1|BASE
 KL|01|09|0|BASE
 ```
+
+##### Parameters
+```--input-lag``` Poll rate for checking for keypress changes
+```--obfuscate``` Boolean to keystroke order in memory and before saving to file
+```--keystroke-log``` Number of keystrokes before logging to file
+
 ### keyboard configuration
-QMK keyboards need to be configured to send keystroke information in an infomative way. This is done by adjusting your keymap.c and rules.mk. You can add [a leader key to disable logging][log-leader] for highly sensitive information.
+QMK keyboards need to be configured to send keystroke information in an infomative way. This is done by adjusting your keymap.c and rules.mk. You can add [a leader key to disable logging][log-leader] for highly sensitive information. The best we can do is send the location of the key that was pressed (row 1 column 10 for example).
 
 ##### rules.mk
 ```
