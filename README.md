@@ -13,6 +13,7 @@ This repository contains tools for caputuring and analyzing keyboard data. This 
     - [Keyboard Configuration](#Keyboard-Configuration)
     - [Privacy and Security Concerns](#privacy-security)
 * [Analyzing Data](#Analyzing-Data)
+* [TODO](#todo)
 
 ## Capturing Data
 ### Keyboard Logging
@@ -72,11 +73,16 @@ That said, I would still recommend not logging passwords and other sensitive inf
 ### Heatmaps
 
 ####  Keyboard Layers
-[![Base layer](https://github.com/joshuabragge/keyboard-analysis-tools/blob/master/images/ergodox-base.png)
-[![Movement layer](https://github.com/joshuabragge/keyboard-analysis-tools/blob/master/images/ergodox-mvmnt.png)
-[![Number layer](https://github.com/joshuabragge/keyboard-analysis-tools/blob/master/images/ergodox-nmbr.png)
+![Base layer](https://github.com/joshuabragge/keyboard-analysis-tools/blob/master/images/ergodox-base.png)
+![Movement layer](https://github.com/joshuabragge/keyboard-analysis-tools/blob/master/images/ergodox-mvmnt.png)
+![Number layer](https://github.com/joshuabragge/keyboard-analysis-tools/blob/master/images/ergodox-nmbr.png)
 
 #### Keys Pressed After Taking Hand off Mouse
 (right keyboard is only applicable)
 
-[![Mouse layer](https://github.com/joshuabragge/keyboard-analysis-tools/blob/master/images/ergodox-mouse.png)
+![Mouse layer](https://github.com/joshuabragge/keyboard-analysis-tools/blob/master/images/ergodox-mouse.png)
+
+## Todo
+- map keycodes onto heatmaps
+- map keycodes onto heatmaps from keymaps.c 
+- make searching for hid devices on key_logger.py dynamic
