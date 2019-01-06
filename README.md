@@ -9,7 +9,7 @@ This repository contains tools for caputuring and analyzing keyboard data. This 
 
 * [Capturing Data](#Capturing-Data)
     - [keyboard_logger.py](#keyboard-logger)
-        - [Parameters](#parmeters)
+         [Parameters](#parameters)
     - [Keyboard Configuration](#Keyboard-Configuration)
 
 ## Capturing Data
