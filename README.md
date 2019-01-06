@@ -33,16 +33,11 @@ KL|02|10|1|BASE
 KL|01|09|0|BASE
 ```
 
-##### Parameters
-```
---input-lag=0.05 Poll rate in seconds to checking for keypress changes
-```
-```
---obfuscate=True randomizes keystroke order before saving to file
-``` 
-```
---keystroke-log=100 Number of keystrokes before logging to file
-``` 
+#### Parameters
+
+`--input-lag=0.05` poll rate in seconds to checking for keypress changes
+`--obfuscate=True` randomizes keystroke order before saving to file
+`--keystroke-log=100` number of keystrokes before logging to file
 
 ### Keyboard Configuration
 QMK keyboards need to be configured to send keystroke information in an infomative way. This is done by adjusting your keymap.c and rules.mk. You can add [a leader key to disable logging][log-leader] for highly sensitive information. The best we can do is send the location of the key that was pressed (row 1 column 10 for example).
