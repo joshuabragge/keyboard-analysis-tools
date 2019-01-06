@@ -11,9 +11,10 @@ At a high level, this script hooks onto a specified HID device - such as an ergo
 
 The resulting file is a list of the keys that pressed, not the value those keys represent (that information can obviously be determined when combined with the keymap.c).
 
-The data structure is obviously a result of how you configure it in your keymap.c ((see keyboard configuration for more details))[#keyboard-configuration]. I have found the following structure to be acceptable.
+The data structure is obviously a result of how you configure it in your keymap.c [(see keyboard configuration for more details)](#keyboard-configuration). I have found the following structure to be acceptable.
 
-```Device | Key row | Key column | Key pressed down | Layer
+```
+Device | Key row | Key column | Key pressed down | Layer
 KL|03|03|1|BASE
 KL|01|09|1|BASE
 KL|02|02|1|BASE
