@@ -13,7 +13,7 @@ This repository contains tools for caputuring and analyzing keyboard data. This 
     - [Keyboard Configuration](#Keyboard-Configuration)
     - [Privacy and Security Concerns](#data-leakage)
 * [Analyzing Data](#Analyzing-Data)
-* [TODO](#todo)
+* [Todo](#todo)
 
 ## Capturing Data
 ### Keyboard Logging
@@ -71,10 +71,16 @@ All of this is irrelevant if a malicious agent has direct access to your compute
 
 ## Analyzing Data
 
+With `obfuscate` on, the data set generated is the equivalent of a keystroke count. With `obfuscate` off, you have a time series dataset of your keystrokes.
+
 ### Heatmaps
 
+Heatmaps are generated with the generate_heatmap.py. The keystroke heatmap colour distributions and the heatmap colours can be configured in heatmap_settings.py. The distribution is manually adjusted because automaticly generated distributions did not provide informative graphics. A [keyboard-layout-editor][keyboard-layout-editor] .json template is referenced in keyboard_layouts.py and all the key colours are updated to have the corresponding heatmap colour according to their keystroke count distribution. The process results in a .json which is pasted into [keyboard-layout-editor's][keyboard-layout-editor] raw data tab to generate the images below. 
+
+[keyboard-layout-editor]: http://keyboard-layout-editor.com/
+
 ####  Keyboard Layers
-![Base layer](https://github.com/joshuabragge/keyboard-analysis-tools/blob/master/images/ergodox-base.png)
+![Base layer](https://github.com/joshuabragge/keyboard-analysis-tools/blob/master/images/ergodox-b ase.png)
 ![Movement layer](https://github.com/joshuabragge/keyboard-analysis-tools/blob/master/images/ergodox-mvmnt.png)
 ![Number layer](https://github.com/joshuabragge/keyboard-analysis-tools/blob/master/images/ergodox-nmbr.png)
 
