@@ -13,6 +13,11 @@ This repository contains tools for caputuring and analyzing keyboard data. This 
     - [Keyboard Configuration](#Keyboard-Configuration)
     - [Privacy and Security Concerns](#data-leakage)
 * [Analyzing Data](#Analyzing-Data)
+    - [Heatmaps](#Heatmaps)
+        - [Keyboard Layers](#Keyboard-Layers)
+        - [Keys Pressed After Taking Hand off Mouse](#pressed-mouse)
+    - [Design Influences](#Design-Influences)
+        - [Ergodox Ez](#Ergodox-Ez)
 * [Todo](#todo)
 
 ## Capturing Data
