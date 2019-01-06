@@ -1,11 +1,21 @@
 # keyboard-analysis-tools
 
-This repository contains tools for caputuring and analyzing keyboard data. This data is used to enhance my custom QMK keyboard layots for my ergodox-ez and planck.
+This repository contains tools for caputuring and analyzing keyboard data. This data is used to enhance custom QMK keyboard layouts such as the [ergodox-ez][ergodox-ez] and [planck]planck.
+
+[ergodox-ez]: https://github.com/joshuabragge/ergodox
+[planck]: https://github.com/joshuabragge/planck/
+
+## Table of Contents
+
+* [Capturing Data](#Capturing-Data)
+    - [keyboard_logger.py](#keyboard-logger)
+        - [Parameters](#parmeters)
+    - [Keyboard Configuration](#Keyboard-Configuration)
 
 ## Capturing Data
-### keyboard_logger.py
+### Keyboard Logging
 
-The keyboard logger script was built because [existing HID listen solutions required administrative permissions][existing-solutions]. Admin permissions can (apparently) be circumvented in Windows with pywinusb.
+keyboard_logger.py was built because [existing HID listen solutions required administrative permissions][existing-solutions]. Admin permissions can (apparently) be circumvented in Windows with pywinusb.
 
 At a high level, this script hooks onto a specified HID device - such as an ergodox-ez keyboard - and records the keys pressed to a file.
 
@@ -34,7 +44,7 @@ KL|01|09|0|BASE
 --keystroke-log=100 Number of keystrokes before logging to file
 ``` 
 
-### keyboard configuration
+### Keyboard Configuration
 QMK keyboards need to be configured to send keystroke information in an infomative way. This is done by adjusting your keymap.c and rules.mk. You can add [a leader key to disable logging][log-leader] for highly sensitive information. The best we can do is send the location of the key that was pressed (row 1 column 10 for example).
 
 ##### rules.mk
