@@ -11,20 +11,18 @@ This repository contains tools for caputuring and analyzing keyboard data. This 
     - [Keyboard Logging](#keyboard-logger)
         - [Parameters](#parameters)
     - [Keyboard Configuration](#Keyboard-Configuration)
-    - [Privacy and Security Concerns](#privacy-security)
+    - [Privacy and Security Concerns](#data-leakage)
 * [Analyzing Data](#Analyzing-Data)
 * [TODO](#todo)
 
 ## Capturing Data
 ### Keyboard Logging
 
-keyboard_logger.py was built because [existing HID listen solutions required administrative permissions][existing-solutions]. Admin permissions can (apparently) be circumvented in Windows with pywinusb.
+keyboard_logger.py was built because [existing HID listen solutions required administrative permissions][existing-solutions]. Admin permissions can be circumvented in Windows with pywinusb.
 
-At a high level, this script hooks onto a specified HID device - such as an ergodox-ez keyboard - and records the keys pressed to a file.
+At a high level, this script hooks onto an HID device, begins listening to the device and stores the messages it receives to a file. More specifically, it records the location of the keys that were pressed (not the configured value of the keys pressed) by QMK keyboards.
 
-The resulting file is a list of the keys that pressed, not the value those keys represent (that information can obviously be determined when combined with the keymap.c).
-
-The data structure is obviously a result of how you configure it in your keymap.c [(see keyboard configuration for more details)](#keyboard-configuration). I have found the following structure to be acceptable.
+The data structure is a result of how one configures their keyboard to emit data on keystrokes [(see keyboard configuration)](#keyboard-configuration). I have found the following structure to be acceptable. 
 
 ```
 Device | Key row | Key column | Key pressed down | Layer
@@ -45,7 +43,7 @@ KL|01|09|0|BASE
 `--keystroke-log=100` number of keystrokes before logging to file
 
 ### Keyboard Configuration
-QMK keyboards need to be configured to send keystroke information in an infomative way. This is done by adjusting your keymap.c and rules.mk. You can add [a leader key to disable logging][log-leader] for highly sensitive information. The best we can do is send the location of the key that was pressed (row 1 column 10 for example).
+QMK keyboards need to be configured to send keystrokes in an infomative way. This is done by adjusting your keymap.c and rules.mk.
 
 ##### rules.mk
 ```
@@ -58,15 +56,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (log_enable) {
       uprintf ("KL|%02d|%02d|%d|%s\n", record->event.key.col, record->event.key.row, record->event.pressed, "BASE");
 ```
+Best practice is to [add a leader key to disable logging][log-leader]. Being able to disable logging without turning off the logging script is preferred when dealing with sensitive information. As mentioned earlier, QMK is unable to return information on the value of the key which was pressed. We can however, return the location of the key that was pressed (row 1 column 10, for example) and then map that location to the corresponding value in keymap.c.
 
 [existing-solutions]: https://www.pjrc.com/teensy/hid_listen.html
 [log-leader]: https://github.com/joshuabragge/ergodox/blob/325429ef3de1e1997918541ce7b1e3b89b066b6b/keymap.c#L564
 
-### Privacy and Security Concerns with Logged Data
+### Data Leakage Concerns Regarding Logged Data
 
-The storing of keystroke data with `--obfuscate=True` should be sufficient to protect your information if it ever falls into the hands of malicious agent. The data is pseudorandomly saved in memory by inserting it into the current keystroke list which exists only in memory (the longer the list the better). Once the number of keystrokes hits it's specified parameter (`--keystroke-log=100`) the list is pseudorandomlized again before appending to the file. You end up with chuncks of pseudorandomlized data the lengh of the --keystroke-log parameter times two (for example with one keystroke of "m" we are recording the press down and release of the key `KL|01|09|0|BASE` and `KL|01|09|1|BASE`).
+Keystroke data generated with `obfuscate=True` should be sufficient to protect your information should the raw data file fall into the wrong hands. The data is pseudorandomly saved in memory by inserting it into the current keystroke list (the longer the list the better). Once the number of keystrokes hits it's maximum length times two (`keystroke-log=100`) the list is pseudorandomlized before appending to the target file. The raw keystroke data is then just chuncks of pseudorandomlized keystrokes the lengh of the `keystroke-log` parameter times two. For example, with one keystroke of "m" we are recording the  down press `KL|01|09|1|BASE` and release of the key `KL|01|09|0|BASE`.
 
-That said, I would still recommend not logging passwords and other sensitive information even with `--obfuscate=True` on. Instead, one should look at disabling the logger temporarily via [a leader key for example][log-leader]. I certainly don't recommend running without `--obfuscate=  False` because becomes a keylogger in it's truest form.
+That said, I would not recommend logging passwords and any other sensitive information even with `obfuscate` enabled. Instead, one should look at disabling the logger temporarily via [some set key like a leader][log-leader]. It should go without saying that I don't recommend running this script with `obfuscate` disabled 
+
+All of this is irrelevant if a malicious agent has direct access to your computer and can monitor HID device messages directly. However, you will most likely have other major issues if that is the case.
 
 ## Analyzing Data
 
