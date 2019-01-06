@@ -82,6 +82,13 @@ That said, I would still recommend not logging passwords and other sensitive inf
 
 ![Mouse layer](https://github.com/joshuabragge/keyboard-analysis-tools/blob/master/images/ergodox-mouse.png)
 
+### Design Influences
+#### Ergodox Ez v1.8
+- CTRL was moved from a pinky location to a prime thumb location due to amount of use
+- Number layer key was moved to pinky trigger due from prime thumb location due to lack of use
+- Removed PGUP/PGDWN keys from prime locations due to lack of use and replaced with useful program shortcuts to windows snipping tool and divvy 
+- Cleared up a ton of unused keys
+
 ## Todo
 - map keycodes onto heatmaps
 - map keycodes onto heatmaps from keymaps.c 
