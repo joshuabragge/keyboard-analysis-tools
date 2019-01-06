@@ -80,7 +80,7 @@ Heatmaps are generated with the generate_heatmap.py. The keystroke heatmap colou
 [keyboard-layout-editor]: http://keyboard-layout-editor.com/
 
 ####  Keyboard Layers
-![Base layer](https://github.com/joshuabragge/keyboard-analysis-tools/blob/master/images/ergodox-b ase.png)
+![Base layer](https://github.com/joshuabragge/keyboard-analysis-tools/blob/master/images/ergodox-base.png)
 ![Movement layer](https://github.com/joshuabragge/keyboard-analysis-tools/blob/master/images/ergodox-mvmnt.png)
 ![Number layer](https://github.com/joshuabragge/keyboard-analysis-tools/blob/master/images/ergodox-nmbr.png)
 
