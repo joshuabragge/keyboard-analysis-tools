@@ -20,7 +20,7 @@ This repository contains tools for caputuring and analyzing keyboard data. This 
 
 keyboard_logger.py was built because [existing HID listen solutions required administrative permissions][existing-solutions]. Admin permissions can be circumvented in Windows with pywinusb.
 
-At a high level, this script hooks onto an HID device, begins listening to the device and stores the messages it receives to a file. More specifically, it records the location of the keys that were pressed (not the configured value of the keys pressed) by QMK keyboards.
+At a high level, this script hooks onto an HID device, begins listening to the device and stores the messages it receives to a file. More specifically, it records the location of the keys that were pressed (not the configured value of the keys pressed) by QMK keyboards. For example, with one keystroke of "m" we are recording the  down press `KL|01|09|1|BASE` and release of the key `KL|01|09|0|BASE`.
 
 The data structure is a result of how one configures their keyboard to emit data on keystrokes [(see keyboard configuration)](#keyboard-configuration). I have found the following structure to be acceptable. 
 
@@ -56,16 +56,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (log_enable) {
       uprintf ("KL|%02d|%02d|%d|%s\n", record->event.key.col, record->event.key.row, record->event.pressed, "BASE");
 ```
-Best practice is to [add a leader key to disable logging][log-leader]. Being able to disable logging without turning off the logging script is preferred when dealing with sensitive information. As mentioned earlier, QMK is unable to return information on the value of the key which was pressed. We can however, return the location of the key that was pressed (row 1 column 10, for example) and then map that location to the corresponding value in keymap.c.
+Best practice is to [add a leader key to disable logging at the keyboard level][log-leader]. Being able to disable logging without turning off the logging script is preferred when dealing with sensitive information. As mentioned earlier, QMK is unable to return information on the value of the key which was pressed. We can however, return the location of the key that was pressed (row 1 column 10, for example) and then map that location to the corresponding value in keymap.c.
 
 [existing-solutions]: https://www.pjrc.com/teensy/hid_listen.html
 [log-leader]: https://github.com/joshuabragge/ergodox/blob/325429ef3de1e1997918541ce7b1e3b89b066b6b/keymap.c#L564
 
 ### Data Leakage Concerns Regarding Logged Data
 
-Keystroke data generated with `obfuscate=True` should be sufficient to protect your information should the raw data file fall into the wrong hands. The data is pseudorandomly saved in memory by inserting it into the current keystroke list (the longer the list the better). Once the number of keystrokes hits it's maximum length times two (`keystroke-log=100`) the list is pseudorandomlized before appending to the target file. The raw keystroke data is then just chuncks of pseudorandomlized keystrokes the lengh of the `keystroke-log` parameter times two. For example, with one keystroke of "m" we are recording the  down press `KL|01|09|1|BASE` and release of the key `KL|01|09|0|BASE`.
+Keystroke data generated with `obfuscate=True` should be sufficient to protect your information should the raw data file fall into the wrong hands. The data is pseudorandomly saved in memory by inserting it into the current keystroke list (the longer the list the better). Once the number of keystrokes hits it's maximum length times two (`keystroke-log=100`) the list is pseudorandomlized before appending to the target file. The raw keystroke data is then just chuncks of pseudorandomlized keystrokes the lengh of the `keystroke-log` parameter times two. 
 
-That said, I would not recommend logging passwords and any other sensitive information even with `obfuscate` enabled. Instead, one should look at disabling the logger temporarily via [some set key like a leader][log-leader]. It should go without saying that I don't recommend running this script with `obfuscate` disabled 
+That said, I would not recommend logging passwords and any other sensitive information even with `obfuscate` enabled. Instead, one should look at disabling the logger temporarily at the keyboard level via [a specified key or with leaer functionality][log-leader]. It should go without saying that I don't recommend running this script with `obfuscate` disabled. Logging should be disabled by default and turned on when required.
 
 All of this is irrelevant if a malicious agent has direct access to your computer and can monitor HID device messages directly. However, you will most likely have other major issues if that is the case.
 
