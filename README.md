@@ -35,7 +35,7 @@ KL|01|09|0|BASE
 
 #### Parameters
 
-`--input-lag=0.05` poll rate in seconds to checking for keypress changes
+`--input-lag=0.05` poll rate in seconds to check for keypress changes
 
 `--obfuscate=True` randomizes keystroke order before saving to file
 
